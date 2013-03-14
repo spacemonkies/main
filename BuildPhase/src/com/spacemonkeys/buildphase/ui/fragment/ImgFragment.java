@@ -57,6 +57,10 @@ public class ImgFragment extends Fragment {
 		mBgnd.setImageDrawable(d);
 	}
 
+	public Drawable onGetBackground() {
+		return mBgnd.getDrawable();
+	}
+
 	public LinearLayout onGetLayout() {
 		return mLay;
 	}

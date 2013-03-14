@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.spacemonkeys.buildphase.R;
 import com.spacemonkeys.buildphase.ui.fragment.MainMapFragment;
-import com.spacemonkies.util.EventInfo;
+import com.spacemonkeys.util.EventInfo;
 
 public class MapActivity extends Activity {
 

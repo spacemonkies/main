@@ -1,4 +1,4 @@
-package com.spacemonkies.util;
+package com.spacemonkeys.util;
 
 import java.util.Date;
 

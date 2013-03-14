@@ -88,12 +88,10 @@ public class ReportActivity extends Activity implements OnClickListener {
 
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
 
-        	Log.w("REPORT_ACTIVITY_GETTING_CAMERA_REQUEST", "BEGIN");
         	mImgFrag.onSetBackground(new BitmapDrawable(getBaseContext().getResources(), (Bitmap) data.getExtras().get("data")));
         }
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-        	Log.w("REPORT_ACTIVITY_GETTING_LOAD_IMAGE", "BEGIN");
             final Uri selectedImage = data.getData();
             final String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
