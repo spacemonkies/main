@@ -29,10 +29,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mindspringlabs.android.location.MSLLocationManager;
 import com.spacemonkeys.buildphase.R;
 import com.spacemonkeys.buildphase.ui.fragment.ButtonFragment;
 import com.spacemonkeys.buildphase.ui.fragment.ImgFragment;
+import com.spacemonkeys.util.MSLLocationManager;
 
 /*
  * launch choose activity to get URI of pic to upload
@@ -102,7 +102,6 @@ public class ReportActivity extends Activity implements OnClickListener {
             picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-        	//img = (ImageView) findViewById(R.id.picpreview);
             final Bitmap b = decodeSampledRotatedBitmapFromFile(400, 400, picturePath);
             mImgFrag.onSetBackground(new BitmapDrawable(getBaseContext().getResources(), b));
 
@@ -140,6 +139,9 @@ public class ReportActivity extends Activity implements OnClickListener {
         	Log.w(TAG, "AssetPath: " + assetPath);
         	Log.w(TAG, "AssetName: " + assetName);
         	Log.w(TAG, "TotalAssetPath: " + assetPath + "/" + assetName);
+
+        	//TODO: save file to temporary app directory for transport, not back in device's gallery
+
         	file = new File(assetPath, "/" + assetName);
         	FileOutputStream outStream = null;
 
