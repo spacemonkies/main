@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="fill_horizontal"
-    android:orientation="vertical" 
-    android:background="@drawable/bgnd">
+    android:background="@drawable/bgnd"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
 
     <ImageButton
         android:id="@+id/map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|fill_horizontal"
         android:background="@drawable/map_icon"
         android:text="Map" />
 
@@ -25,7 +25,6 @@
         android:id="@+id/web"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical|fill_horizontal"
         android:text="WebSearch" />
 
 </LinearLayout>
