@@ -1,14 +1,5 @@
 TODO:
 
-SplashActivity:
-	better background
-
-SendReportActivity:
-	add button for camera
-	add button for gallery
-	add fragment for button/gallery choice
-	add fragment for image after user selects
-
 ViewReportActivity
 	create xml layout
 	

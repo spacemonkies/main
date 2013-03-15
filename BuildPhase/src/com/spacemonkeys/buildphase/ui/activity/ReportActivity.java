@@ -50,11 +50,11 @@ public class ReportActivity extends Activity implements OnClickListener {
     private Button mSubmit, mGetLoc;
     private TextView mAdd;
     private String picturePath, assetPath, assetName;
-    private File file;
     private Bitmap bitmapScaled;
     private ButtonFragment mButnFrag;
     private ImgFragment mImgFrag;
     private MSLLocationManager mLoc;
+    private File mFile;
 
 	@Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -75,7 +75,10 @@ public class ReportActivity extends Activity implements OnClickListener {
         date.setText(s);
 
         mLoc = new MSLLocationManager(this);
+        Log.e("@REPORT_ACTIVITY", "mLOC equals " + mLoc);
+        Log.e("@REPORT_ACTIVITY", "location is " + mLoc.getAddress(mLoc.getLocation(false)));
         final String add = mLoc.getAddress(mLoc.getLocation(false));
+
         mAdd.setText(add);
 
     }
@@ -105,34 +108,6 @@ public class ReportActivity extends Activity implements OnClickListener {
             final Bitmap b = decodeSampledRotatedBitmapFromFile(400, 400, picturePath);
             mImgFrag.onSetBackground(new BitmapDrawable(getBaseContext().getResources(), b));
 
-            /*
-        	//final BitmapDrawable raw = (BitmapDrawable) img.getDrawable();
-
-            final File imgFile = new  File(picturePath);
-
-            final Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-        	final int oldWidth = bitmap.getWidth();
-        	final int oldHeight = bitmap.getHeight();
-        	final int newWidth = 400;
-            final int newHeight = 400;
-
-            final float scaleWidth = (float) newWidth / oldWidth;
-            final float scaleHeight = (float) newHeight / oldHeight;
-
-            // create a matrix for the manipulation
-            final Matrix matrix = new Matrix();
-            // resize the bit map
-            matrix.postScale(newWidth, newHeight);
-            matrix.postRotate(90);
-
-            // recreate the new Bitmap
-        	bitmapScaled = Bitmap.createBitmap(bitmap, 0, 0,  newWidth, newHeight, matrix, true);
-        	//bitmapScaled = raw.getBitmap();
-
-        	img = (ImageView) findViewById(R.id.picpreview);
-            img.setImageBitmap(bitmapScaled);
-
         	assetPath = picturePath.substring(0, 28);
         	assetName = "transport" + picturePath.substring(29, picturePath.length());
         	Log.w(TAG, "TotalAssetPath: " + picturePath);
@@ -142,20 +117,13 @@ public class ReportActivity extends Activity implements OnClickListener {
 
         	//TODO: save file to temporary app directory for transport, not back in device's gallery
 
-        	file = new File(assetPath, "/" + assetName);
-        	FileOutputStream outStream = null;
-
         	Log.w(TAG, "About to start writing file");
 
 			try {
 				Log.i(TAG, "Writing file");
-				outStream = new FileOutputStream(file);
-				bitmapScaled.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
-				Log.w(TAG, "bitmapScaledHeight: " + bitmapScaled.getHeight());
-				Log.w(TAG, "bitmapScaledWidth: " + bitmapScaled.getWidth());
+				mFile = File.createTempFile(assetName, null, getBaseContext().getCacheDir());
+				//bitmapScaled.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
 
-				outStream.flush();
-				outStream.close();
 				Log.i(TAG, "Finished writing file");
 			} catch (final Exception e) {
 				e.printStackTrace();
@@ -163,8 +131,6 @@ public class ReportActivity extends Activity implements OnClickListener {
 			}
 
 			onTransportImg();
-			*/
-
         }
 
         onSwitchFragments();
@@ -192,21 +158,20 @@ public class ReportActivity extends Activity implements OnClickListener {
 
 	private class ImageUpload extends AsyncTask<String, Void, String> {
 
-        FTPClient ftpClient = new FTPClient();
+        final FTPClient ftpClient = new FTPClient();
 
         @Override
         protected String doInBackground(final String... params) {
         	Log.w(TAG, "Upload Started");
             	try {
-
             		ftpClient.connect(InetAddress.getByName("ftp.31stcenturydesigns.com"));
-              	    ftpClient.login("mjdempsey", "C0d3F3st");
-              	    ftpClient.changeWorkingDirectory("images");
+              	    ftpClient.login("mdempsey", "C0d3F3st");
+              	    ftpClient.changeWorkingDirectory("");
               	    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
               	    BufferedInputStream buffIn = null;
               	    Log.w(TAG, "FileName: " + assetName);
-              		buffIn = new BufferedInputStream(new FileInputStream(file));
+              		buffIn = new BufferedInputStream(new FileInputStream(mFile));
               		ftpClient.enterLocalPassiveMode();
               	    ftpClient.storeFile(assetName, buffIn);
               	    buffIn.close();

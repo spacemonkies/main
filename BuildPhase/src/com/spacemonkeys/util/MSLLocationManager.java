@@ -31,9 +31,9 @@ import android.util.Log;
 		// flag for GPS status
 		boolean canGetLocation = false;
 
-		Location location; // location
-		double latitude; // latitude
-		double longitude; // longitude
+		protected Location location; // location
+		protected double latitude; // latitude
+		protected double longitude; // longitude
 
 		protected final Geocoder mGeocoder;
 
@@ -65,11 +65,18 @@ import android.util.Log;
 			List<Address> add = null;
 
 			try {
-				add = mGeocoder.getFromLocation(latitude, longitude, 1);
+				add = mGeocoder.getFromLocation(pLocation.getLatitude(), pLocation.getLongitude(), 1);
+				Log.e("@MSLLocationManager", "add equals" + add.toString());
 			} catch (final IOException e) {
+				Log.e("@MSLLocationManager", "CRASHING INSIDE MSLLocationManager.getAddress() TRY/CATCH");
+				Log.e("@MSLLocationManager", "pLocation equals " + pLocation.toString());
+				Log.e("@MSLLocationManager", "mGeocoder equals "  + mGeocoder.toString());
 				e.printStackTrace();
+				Log.e("@MSLLocationManager", "DYING NOW");
 			}
 
+			Log.e("@MSLLocationManager", "DEAD NOW");
+			Log.e("@MSLLocationManager", "DEATH'S ADDRESS IS " + add.toString());
 			final String line1 = add.get(0).getAddressLine(0);
 			final String line2 = add.get(0).getAddressLine(1);
 
@@ -92,7 +99,6 @@ import android.util.Log;
 					this.canGetLocation = true;
 					if (isNetworkEnabled) {
 						mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-						Log.d("Network", "Network");
 						if (mLocationManager != null) {
 							location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 							if (location != null) {
@@ -105,7 +111,6 @@ import android.util.Log;
 					if (isGPSEnabled) {
 						if (location == null) {
 							mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-							Log.d("GPS Enabled", "GPS Enabled");
 							if (mLocationManager != null) {
 								location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 								if (location != null) {
@@ -116,7 +121,6 @@ import android.util.Log;
 						}
 					}
 				}
-
 			return location;
 		}
 
