@@ -3,6 +3,7 @@ package com.spacemonkeys.buildphase.ui.activity;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.util.Date;
 
@@ -50,7 +51,7 @@ public class ReportActivity extends Activity implements OnClickListener {
     private Button mSubmit, mGetLoc;
     private TextView mAdd;
     private String picturePath, assetPath, assetName;
-    private Bitmap bitmapScaled;
+    private Bitmap mBitmapOut;
     private ButtonFragment mButnFrag;
     private ImgFragment mImgFrag;
     private MSLLocationManager mLoc;
@@ -105,15 +106,10 @@ public class ReportActivity extends Activity implements OnClickListener {
             picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            final Bitmap b = decodeSampledRotatedBitmapFromFile(400, 400, picturePath);
-            mImgFrag.onSetBackground(new BitmapDrawable(getBaseContext().getResources(), b));
+            mBitmapOut = decodeSampledRotatedBitmapFromFile(512, 512, picturePath);
+            mImgFrag.onSetBackground(new BitmapDrawable(getBaseContext().getResources(), mBitmapOut));
 
-        	assetPath = picturePath.substring(0, 28);
-        	assetName = "transport" + picturePath.substring(29, picturePath.length());
-        	Log.w(TAG, "TotalAssetPath: " + picturePath);
-        	Log.w(TAG, "AssetPath: " + assetPath);
-        	Log.w(TAG, "AssetName: " + assetName);
-        	Log.w(TAG, "TotalAssetPath: " + assetPath + "/" + assetName);
+        	assetName = "transport" + picturePath.substring(49, picturePath.length());
 
         	//TODO: save file to temporary app directory for transport, not back in device's gallery
 
@@ -121,16 +117,16 @@ public class ReportActivity extends Activity implements OnClickListener {
 
 			try {
 				Log.i(TAG, "Writing file");
-				mFile = File.createTempFile(assetName, null, getBaseContext().getCacheDir());
-				//bitmapScaled.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
-
+				Log.w("@REPORT_ACTIVITY.onActivityResult()", "File path " + getBaseContext().getFilesDir() + assetName);
+				mFile = new File(getBaseContext().getFilesDir(), assetName);
+		        final FileOutputStream outStream = new FileOutputStream(mFile);
+		        mBitmapOut.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+				outStream.close();
 				Log.i(TAG, "Finished writing file");
 			} catch (final Exception e) {
 				e.printStackTrace();
 				Log.w(TAG, "File write failed");
 			}
-
-			onTransportImg();
         }
 
         onSwitchFragments();
@@ -165,12 +161,12 @@ public class ReportActivity extends Activity implements OnClickListener {
         	Log.w(TAG, "Upload Started");
             	try {
             		ftpClient.connect(InetAddress.getByName("ftp.31stcenturydesigns.com"));
-              	    ftpClient.login("mdempsey", "C0d3F3st");
-              	    ftpClient.changeWorkingDirectory("");
+              	    ftpClient.login("mimclaughlin", "C0d3F3st");
+              	    ftpClient.changeWorkingDirectory("/31stcenturydesigns.com/images/");
               	    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
               	    BufferedInputStream buffIn = null;
-              	    Log.w(TAG, "FileName: " + assetName);
+              	    Log.w("@ReportActivity.ftpClient.doInBackground()", "FileName " + mFile.getAbsolutePath());
               		buffIn = new BufferedInputStream(new FileInputStream(mFile));
               		ftpClient.enterLocalPassiveMode();
               	    ftpClient.storeFile(assetName, buffIn);
